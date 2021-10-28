@@ -12,17 +12,79 @@ module Yer
         correct_hrefs = []
         counter=0
 
-# HollywoodUnlocked
-    agent = Mechanize.new
-    url = "https://hollywoodunlocked.com/category/news/"
-    page = agent.get(url) 
-    site = page.search('.article-contain')
-    site.each do |k|
-        links = k.search('a').attr('href')
-        correct_hrefs.push(links)
+# Need to add 
+# shadowandact
+# uri = URI.parse("https://api1+.blavity.com/v1/trending_articles")
+# request = Net::HTTP::Get.new(uri)
+# request["Sec-Ch-Ua"] = "\"Chromium\";v=\"92\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"92\""
+# request["Accept"] = "application/json, text/plain, */*"
+# request["Referer"] = "https://shadowandact.com/"
+# request["Sec-Ch-Ua-Mobile"] = "?0"
+# request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
+
+# req_options = {
+#     use_ssl: uri.scheme == "https",
+# }
+
+# response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+#     http.request(request)
+# end
+
+# # response.code
+# site = response.body
+# json = JSON.parse(site)
+# json.each do |i|
+#     fdata = "https://shadowandact.com/"+ i["slug"]
+#     correct_hrefs.push(fdata)
+#     ap fdata
+# end
+
+# BleacherReport 
+
+url="https://bleacherreport.com/nba"
+agent= Mechanize.new
+page = agent.get(url)
+cell = page.search('.contentStream').search('li').search('a')
+cell.each do |u|
+    link = u.attr('href')
+    slink = link.to_s
+    if(slink.length > 70)
+        correct_hrefs.push(slink)
     end
-    ap correct_hrefs.count
-    pp "Current Site : HollywoodUnlocked"
+end
+ap correct_hrefs.count
+ap 'Current Site : BleacherReport'
+
+
+
+
+# complex
+url = "https://www.complex.com/pop-culture/"
+agent = Mechanize.new
+page = agent.get(url)
+data = page.search('.main-container').search('a')
+data.each do |e|
+    link = e.attr('href').to_s
+    if(link.length > 30)
+        correct_hrefs.push("https://www.complex.com"+ link)
+        # ap link
+    end
+end
+ap correct_hrefs.count
+ap 'Current Site : Complex'
+
+
+# HollywoodUnlocked
+    # agent = Mechanize.new
+    # url = "https://hollywoodunlocked.com/category/news/"
+    # page = agent.get(url) 
+    # site = page.search('.article-contain')
+    # site.each do |k|
+    #     links = k.search('a').attr('href')
+    #     correct_hrefs.push(links)
+    # end
+    # ap correct_hrefs.count
+    # pp "Current Site : HollywoodUnlocked"
 
 
 # Essence
@@ -41,41 +103,41 @@ module Yer
 
 
 
-# BallerAlert [X]
-    agent = Mechanize.new
-    url="https://balleralert.com/"
-    page=agent.get(url)
-    page.search('.item-list').each do |sauce|
-        title= sauce.search('.post-box-title').search('a')
-        link = title.attr("href").value
-        correct_hrefs.push(link)
-    end
-    ap correct_hrefs.count 
-    p "Current Site : Baller Alert "
+# # BallerAlert [X]
+#     agent = Mechanize.new
+#     url="https://balleralert.com/"
+#     page=agent.get(url)
+#     page.search('.item-list').each do |sauce|
+#         title= sauce.search('.post-box-title').search('a')
+#         link = title.attr("href").value
+#         correct_hrefs.push(link)
+#     end
+#     ap correct_hrefs.count 
+#     p "Current Site : Baller Alert "
 
 
-#PeopleOfColorInTech [X]
-    agent = Mechanize.new
-    range =(1...39)
+# #PeopleOfColorInTech [X]
+#     agent = Mechanize.new
+#     range =(1...39)
 
-    range.each do |adder|
-    site = "https://peopleofcolorintech.com/category/articles/page/" + adder.to_s + "/"
-    page = agent.get(site)
-    bcontainer = page.search('.content-header-single')
-        bcontainer.each do |xp|
-            smdata = xp.search('.content-title').search('a').attr('href').value
-            correct_hrefs.push(smdata)
-        end
-    end
-    ap correct_hrefs.count 
-    p "Current Site : People Of Color In Tech "
+#     range.each do |adder|
+#     site = "https://peopleofcolorintech.com/category/articles/page/" + adder.to_s + "/"
+#     page = agent.get(site)
+#     bcontainer = page.search('.content-header-single')
+#         bcontainer.each do |xp|
+#             smdata = xp.search('.content-title').search('a').attr('href').value
+#             correct_hrefs.push(smdata)
+#         end
+#     end
+#     ap correct_hrefs.count 
+#     p "Current Site : People Of Color In Tech "
 
 
 # AfroTech[X]
     agent = Mechanize.new
-    url="https://afrotech.com/news"
+    url="https://afrotech.com"
     page=agent.get(url)
-    info= page.search('.article-card')
+    info= page.search('.article-card__title')
     info.each do |u|
         link = u.search('a').attr('href').value
         full_site = url + link
@@ -176,11 +238,12 @@ module Yer
     #                 end
     #             end
 
-            if finalContainer.length < 1
-               return {status: 400}
-            else
-                return {data: finalContainer,status:200}
-            end
+            # if finalContainer.length < 1
+            #     return {status: 400}
+            # else
+            #     return {data: finalContainer,status:200}
+            # end
+            return {data: correct_hrefs ,status:200}
     #  return correct_hrefs.uniq.to_json
     # HTTP.post('localhost:3000/links', :json => {data:correct_hrefs}) 
     

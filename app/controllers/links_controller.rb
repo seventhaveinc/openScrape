@@ -5,6 +5,8 @@ class LinksController < ApplicationController
   # GET /links or /links.json
   def index
     @links = Yer::Iscrape.initialize.to_json
+    
+    render json: @links
   end
 
   # GET /links/1 or /links/1.json
